@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
-set -eo pipefail
-
-SCRIPT_SOURCE="${BASH_SOURCE[0]}"
-if [ -z "$SCRIPT_SOURCE" ]; then
-    SCRIPT_SOURCE="$0"
+# Handle curl piping - detect script source before strict mode
+if [ -n "${BASH_SOURCE[0]}" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+elif [ -n "$0" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+else
+    echo "Error: Cannot determine script location"
+    exit 1
 fi
-SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_SOURCE")" && pwd)"
 source "$SCRIPT_DIR/scripts/lib.sh"
+
+set -eo pipefail
 
 # Version argument
 OCL_VERSION="${1:-2026.2.3}"
