@@ -17,10 +17,10 @@ cp "$SCRIPT_DIR/../../patches/glibc-compat.js" "$PROJECT_DIR/patches/glibc-compa
 cp "$SCRIPT_DIR/../../patches/systemctl" "$PREFIX/bin/systemctl"
 chmod +x "$PREFIX/bin/systemctl"
 
-echo "Running: npm install -g openclaw@latest --ignore-scripts"
+echo "Running: npm install -g openclaw@${OCL_VERSION:-latest} --ignore-scripts"
 echo "This may take several minutes..."
 echo ""
-npm install -g openclaw@latest --ignore-scripts
+npm install -g "openclaw@${OCL_VERSION:-latest}" --ignore-scripts
 
 echo ""
 echo -e "${GREEN}[OK]${NC}   OpenClaw installed"

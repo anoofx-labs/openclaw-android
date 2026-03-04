@@ -4,6 +4,16 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/scripts/lib.sh"
 
+# Version argument
+OCL_VERSION="${1:-2026.2.3}"
+if [ "$1" = "latest" ]; then
+    OCL_VERSION="latest"
+    echo "Installing OpenClaw version: latest"
+else
+    echo "Installing OpenClaw version: $OCL_VERSION"
+fi
+export OCL_VERSION
+
 echo ""
 echo -e "${BOLD}========================================${NC}"
 echo -e "${BOLD}  OpenClaw on Android - Installer v${OA_VERSION}${NC}"
