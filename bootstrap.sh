@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # bootstrap.sh - Download and run OpenClaw on Android installer
-# Usage: curl -sL https://raw.githubusercontent.com/AidanPark/openclaw-android/main/bootstrap.sh | bash
+# Usage: curl -sL https://raw.githubusercontent.com/anoofx-labs/openclaw-android/main/bootstrap.sh | bash
+#   or:  curl -sL https://raw.githubusercontent.com/anoofx-labs/openclaw-android/main/bootstrap.sh | bash -s 2026.2.3
+#   or:  curl -sL https://raw.githubusercontent.com/anoofx-labs/openclaw-android/main/bootstrap.sh | bash -s latest
 set -euo pipefail
 
-REPO_TARBALL="https://github.com/AidanPark/openclaw-android/archive/refs/heads/main.tar.gz"
+REPO_TARBALL="https://github.com/anoofx-labs/openclaw-android/archive/refs/heads/main.tar.gz"
 INSTALL_DIR="$HOME/.openclaw-android/installer"
 
 RED='\033[0;31m'
@@ -23,8 +25,8 @@ echo "Downloading installer..."
 mkdir -p "$INSTALL_DIR"
 curl -sfL "$REPO_TARBALL" | tar xz -C "$INSTALL_DIR" --strip-components=1
 
-bash "$INSTALL_DIR/install.sh"
+bash "$INSTALL_DIR/install.sh" "$@"
 
-cp "$INSTALL_DIR/uninstall.sh" "$HOME/.openclaw-android/uninstall.sh"
-chmod +x "$HOME/.openclaw-android/uninstall.sh"
+cp "$INSTALL_DIR/uninstall.sh" "$HOME/.openclaw-android/uninstall.sh" 2>/dev/null || true
+chmod +x "$HOME/.openclaw-android/uninstall.sh" 2>/dev/null || true
 rm -rf "$INSTALL_DIR"
