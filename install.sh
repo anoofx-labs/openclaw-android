@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_SOURCE="${BASH_SOURCE[0]}"
+if [ -z "$SCRIPT_SOURCE" ]; then
+    SCRIPT_SOURCE="$0"
+fi
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_SOURCE")" && pwd)"
 source "$SCRIPT_DIR/scripts/lib.sh"
 
 # Version argument
