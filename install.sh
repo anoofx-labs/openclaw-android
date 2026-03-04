@@ -1,14 +1,43 @@
 #!/usr/bin/env bash
-# Handle curl piping - detect script source before strict mode
-if [ -n "${BASH_SOURCE[0]}" ]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-elif [ -n "$0" ]; then
-    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-else
-    echo "Error: Cannot determine script location"
+# Handle curl piping - use readlink or detect proper script source
+resolve_dir() {
+    local source="$1"
+    while [ -L "$source" ]; do
+        local dir="$(cd -P "$(dirname "$source")" && pwd)"
+        source="$(readlink "$source")"
+        [[ $source != /* ]] && source="$dir/$source"
+    done
+    (cd "$(dirname "$source")" && pwd)
+}
+
+find_script_dir() {
+    if [ -n "${BASH_SOURCE[0]}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+        resolve_dir "${BASH_SOURCE[0]}"
+        return
+    fi
+    if [ -n "$0" ] && [ -f "$0" ]; then
+        resolve_dir "$0"
+        return
+    fi
+    if [ -f "./install.sh" ]; then
+        pwd
+        return
+    fi
+    echo "Error: Cannot determine script location" >&2
     exit 1
-fi
-source "$SCRIPT_DIR/scripts/lib.sh"
+}
+
+SCRIPT_DIR=$(find_script_dir)
+source "$SCRIPT_DIR/scripts/lib.sh" 2>/dev/null || {
+    echo "Error: This script requires the full repository files."
+    echo ""
+    echo "Please clone the repo first:"
+    echo "  pkg update && pkg install git"
+    echo "  git clone https://github.com/anoofx-labs/openclaw-android.git"
+    echo "  cd openclaw-android"
+    echo "  bash install.sh"
+    exit 1
+}
 
 set -eo pipefail
 
